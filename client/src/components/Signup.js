@@ -13,7 +13,7 @@ export default function Signup({ handleLogin, errors, setErrors }) {
 
   const handleSubmitSignup = (e) => {
     e.preventDefault();
-    fetch("/users/register", {
+    fetch("http://localhost:5000/users/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export default function Signup({ handleLogin, errors, setErrors }) {
       <form onSubmit={handleSubmitSignup}>
         <div>
           <label>
-            Email:
+            Username:
             <input
               type="username"
               name="username"
@@ -60,9 +60,9 @@ export default function Signup({ handleLogin, errors, setErrors }) {
           <input type="submit" value="Sign Up" />
         </div>
       </form>
-      {errors?.map((err) => (
+      {/* {errors?.map((err) => (
         <p>{err}</p>
-      ))}
+      ))} */}
     </div>
   );
 }

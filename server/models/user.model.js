@@ -1,15 +1,23 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const validator = require("validator");
 
 const UserSchema = new Schema({
   username: {
     type: String,
     required: true,
     unique: true,
+    trim: true,
+    validator: (value) => {
+      if (!validator.isUsername(value)) {
+        throw new Error({ error: "username invalid" });
+      }
+    },
   },
   password: {
     type: String,
     required: true,
+    trim: true,
   },
   created: {
     type: Date,

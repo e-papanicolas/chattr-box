@@ -7,11 +7,12 @@ const bodyParser = require("body-parser");
 const MONGODB_URI = process.env.MONGODB_URI;
 const mongoose = require("mongoose");
 const errors = require("./errorHandler");
-const usersRouter = require("./routes/user_routes");
+const usersRouter = require("./routes/user.routes");
 
 // middleware for parsing requests
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // middleware for routes and errors
 app.use("/users", usersRouter);
