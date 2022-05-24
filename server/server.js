@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // middleware for routes and errors
 app.use("/users", usersRouter);
-app.use(errors.errorHandler);
+// app.use(errors.errorHandler);
 
 // mongoDB connection
 mongoose.connect(MONGODB_URI);

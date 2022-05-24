@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 
-export default function Login({ handleLogin, errors, setErrors }) {
+export default function Login({ handleLogin, errors, setErrors, setToken }) {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -13,7 +13,7 @@ export default function Login({ handleLogin, errors, setErrors }) {
 
   function handleSubmitLogin(e) {
     e.preventDefault();
-    fetch("/users/login", {
+    fetch("http://localhost:5000/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -23,7 +23,8 @@ export default function Login({ handleLogin, errors, setErrors }) {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        handleLogin(data);
+        handleLogin(data.data);
+        setToken(data.token);
       })
       .catch((e) => {
         console.log(e);
@@ -59,9 +60,9 @@ export default function Login({ handleLogin, errors, setErrors }) {
           <input type="submit" value="Log in" />
         </div>
       </form>
-      {errors?.map((err) => (
+      {/* {errors?.map((err) => (
         <p>{err}</p>
-      ))}
+      ))} */}
     </div>
   );
 }

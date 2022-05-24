@@ -7,7 +7,6 @@ const User = require("../models/user.model");
 
 // sign up - create new user
 router.post("/register", (req, res, next) => {
-  console.log(req.body);
   bcrypt.hash(req.body.password, 10).then((hash) => {
     const user = new User({
       username: req.body.username,
@@ -15,19 +14,15 @@ router.post("/register", (req, res, next) => {
     });
     user
       .save()
-      .then((res) => {
+      .then((response) => {
         res
           .status(201)
-          .json({ message: "User successfully created", result: res });
+          .json({ message: "User successfully created", result: response });
       })
       .catch((error) => {
         res.status(500).json({ error: error });
       });
   });
-
-  // const user = new User(req.body);
-  // user.save();
-  // res.json(user);
 });
 
 // login
@@ -41,8 +36,8 @@ router.post("/login", (req, res, next) => {
       getUser = user;
       return bcrypt.compare(req.body.password, user.password);
     })
-    .then((res) => {
-      if (!res) {
+    .then((response) => {
+      if (!response) {
         return res.status(401).json({ message: "Authentication failed" });
       }
       let jwtToken = jwt.sign(
@@ -60,29 +55,22 @@ router.post("/login", (req, res, next) => {
         .status(401)
         .json({ message: "Authentication failed", error: error });
     });
-
-  // const { email, password } = req.body;
-  // User.findOne({ email: email }).then((user) => {
-  //   if (user.password === password) {
-  //     res.json(user);
-  //   } else {
-  //     res.status(401).send("Incorrect password");
-  //   }
-  // });
 });
 
 // logout
-router.get("/:id/logout", (req, res, next) => {});
+router.get("/:_id/logout", (req, res, next) => {});
 
 // get / show user
-router.get("/:id", auth, (req, res, next) => {
-  User.findById(req.params.id, (error, data) => {
+router.get("/:_id", auth, (req, res, next) => {
+  console.log(req.params);
+  User.findById(req.params._id, (error, data) => {
+    console.log(data);
     if (error) return next(error);
     else res.status(200).json({ result: data });
   });
 });
 
 // update user
-router.put("/:id", (req, res, next) => {});
+router.put("/:_id", (req, res, next) => {});
 
 module.exports = router;

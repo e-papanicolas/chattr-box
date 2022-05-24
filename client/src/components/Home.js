@@ -1,9 +1,10 @@
 import React from "react";
-import { useContext } from "react";
-import UserContext from "../App";
+// import { useContext } from "react";
+// import UserContext from "../App";
 
-function Home() {
-  const user = useContext(UserContext);
+function Home({ user }) {
+  // const user = useContext(UserContext);
+  console.log(user);
   return (
     <div>
       Home

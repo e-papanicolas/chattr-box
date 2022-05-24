@@ -2,6 +2,7 @@ import "./App.css";
 // We use Route in order to define the different routes of our application
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useState, useEffect, createContext } from "react";
+import useLocalStorage from "use-local-storage";
 
 import Signup from "./components/Signup";
 import Login from "./components/Login";
@@ -11,21 +12,27 @@ export const UserContext = createContext({});
 
 function App() {
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   // set state
   const [currentUser, setCurrentUser] = useState({});
   const [errors, setErrors] = useState([]);
   const [isLoggedIn, setLoggedIn] = useState(false);
 
+  function setToken(token) {
+    localStorage.setItem("token", token);
+  }
+
   // handles login and logout, sets or removes user
   function handleLogin(user) {
+    console.log(user);
     setCurrentUser(user);
     setLoggedIn(true);
     navigate(`/home`);
   }
 
   function handleLogOut() {
-    fetch(`/users/${currentUser.id}/logout`, {
+    fetch(`http://localhost:5000/users/${currentUser._id}/logout`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -36,22 +43,23 @@ function App() {
   }
 
   // fetches the user from api and sets user in state
-  // useEffect(() => {
-  //   fetch(`/users/${currentUser.id}`, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setCurrentUser(data);
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //       setErrors(e);
-  //     });
-  // }, [currentUser.id]);
+  useEffect(() => {
+    fetch(`http://localhost:5000/users/${currentUser._id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCurrentUser(data);
+      })
+      .catch((e) => {
+        console.log(e);
+        setErrors(e);
+      });
+  }, [currentUser._id, token]);
 
   if (!isLoggedIn) {
     return (
@@ -74,6 +82,7 @@ function App() {
                 handleLogin={handleLogin}
                 errors={errors}
                 setErrors={setErrors}
+                setToken={setToken}
               />
             }
           />
@@ -86,7 +95,7 @@ function App() {
     <div className="App">
       <UserContext.Provider value={currentUser}>
         <Routes>
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<Home user={currentUser} />} />
         </Routes>
       </UserContext.Provider>
     </div>

@@ -2,17 +2,20 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 
 const auth = (req, res, next) => {
+  console.log("in auth");
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = authHeader.split(" ")[1];
     data = jwt.verify(token, process.env.JWT_KEY);
+    console.log(data);
 
-    User.findOne({ token_id: data.userId })
+    User.findOne({ _id: data.userId })
       .then((user) => {
         if (!user) {
           res.status(401).json({ message: "Authentication failed" });
         }
-        next();
+        console.log(user);
+        next(user);
       })
       .catch((error) => {
         return res

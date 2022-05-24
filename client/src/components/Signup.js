@@ -23,7 +23,7 @@ export default function Signup({ handleLogin, errors, setErrors }) {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        handleLogin(data);
+        handleLogin(data.result);
       })
       .catch((e) => {
         console.log(e);
