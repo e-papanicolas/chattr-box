@@ -6,7 +6,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const MONGODB_URI = process.env.MONGODB_URI;
 const mongoose = require("mongoose");
-const errors = require("./utils/errorHandler");
+const errors = require("./errorHandler");
 const usersRouter = require("./routes/user_routes");
 
 // middleware for parsing requests

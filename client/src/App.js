@@ -36,22 +36,22 @@ function App() {
   }
 
   // fetches the user from api and sets user in state
-  useEffect(() => {
-    fetch(`/users/${currentUser.id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setCurrentUser(data);
-      })
-      .catch((e) => {
-        console.log(e);
-        setErrors(e);
-      });
-  }, [currentUser.id]);
+  // useEffect(() => {
+  //   fetch(`/users/${currentUser.id}`, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setCurrentUser(data);
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //       setErrors(e);
+  //     });
+  // }, [currentUser.id]);
 
   if (!isLoggedIn) {
     return (

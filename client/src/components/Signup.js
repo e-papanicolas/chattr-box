@@ -60,7 +60,7 @@ export default function Signup({ handleLogin, errors, setErrors }) {
           <input type="submit" value="Sign Up" />
         </div>
       </form>
-      {errors.map((err) => (
+      {errors?.map((err) => (
         <p>{err}</p>
       ))}
     </div>

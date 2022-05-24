@@ -59,7 +59,7 @@ export default function Login({ handleLogin, errors, setErrors }) {
           <input type="submit" value="Log in" />
         </div>
       </form>
-      {errors.map((err) => (
+      {errors?.map((err) => (
         <p>{err}</p>
       ))}
     </div>
