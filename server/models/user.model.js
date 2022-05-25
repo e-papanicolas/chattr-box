@@ -8,11 +8,11 @@ const UserSchema = new Schema({
     required: true,
     unique: true,
     trim: true,
-    validator: (value) => {
-      if (!validator.isUsername(value)) {
-        throw new Error({ error: "username invalid" });
-      }
-    },
+    // validator: (value) => {
+    //   if (!validator.isEmail(value)) {
+    //     throw new Error({ error: "username invalid" });
+    //   }
+    // },
   },
   password: {
     type: String,
