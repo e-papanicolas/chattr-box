@@ -2,7 +2,6 @@ import "./App.css";
 // We use Route in order to define the different routes of our application
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useState, useEffect, createContext } from "react";
-import useLocalStorage from "use-local-storage";
 
 import Signup from "./components/Signup";
 import Login from "./components/Login";
@@ -32,19 +31,14 @@ function App() {
   }
 
   function handleLogOut() {
-    fetch(`http://localhost:5000/users/${currentUser._id}/logout`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
     setLoggedIn(false);
+    localStorage.clear();
     navigate("/");
   }
 
   // fetches the user from api and sets user in state
   useEffect(() => {
-    fetch(`http://localhost:5000/users/${currentUser._id}`, {
+    fetch(`http://localhost:5000/users/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -53,13 +47,15 @@ function App() {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log("use effect return", data);
+        setLoggedIn(true);
         setCurrentUser(data);
       })
       .catch((e) => {
         console.log(e);
         setErrors(e);
       });
-  }, [currentUser._id, token]);
+  }, [token]);
 
   if (!isLoggedIn) {
     return (
@@ -72,6 +68,7 @@ function App() {
                 handleLogin={handleLogin}
                 errors={errors}
                 setErrors={setErrors}
+                setToken={setToken}
               />
             }
           />
@@ -95,7 +92,10 @@ function App() {
     <div className="App">
       <UserContext.Provider value={currentUser}>
         <Routes>
-          <Route path="/home" element={<Home user={currentUser} />} />
+          <Route
+            path="/home"
+            element={<Home user={currentUser} handleLogOut={handleLogOut} />}
+          />
         </Routes>
       </UserContext.Provider>
     </div>
