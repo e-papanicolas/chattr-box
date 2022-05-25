@@ -6,68 +6,76 @@ const auth = require("../middleware/auth");
 const User = require("../models/user.model");
 
 // sign up - create new user
-router.post("/register", (req, res, next) => {
-  bcrypt.hash(req.body.password, 10).then((hash) => {
-    const user = new User({
-      username: req.body.username,
-      password: hash,
+router.post("/register", async (req, res, next) => {
+  const { username, password } = req.body;
+
+  try {
+    let user = await User.findOne({ username: username });
+    if (user) return res.status(400).json({ message: "username is taken" });
+
+    user = new User({
+      username,
+      password,
     });
-    user
-      .save()
-      .then((response) => {
-        res
-          .status(201)
-          .json({ message: "User successfully created", result: response });
-      })
-      .catch((error) => {
-        res.status(500).json({ error: error });
-      });
-  });
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
+    await user.save();
+
+    const payload = {
+      user: {
+        _id: user._id,
+      },
+    };
+
+    jwt.sign(payload, process.env.JWT_KEY, (err, token) => {
+      if (err) throw err;
+      res.status(200).json({ token: token, data: user });
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Error creating user" });
+  }
 });
 
 // login
-router.post("/login", (req, res, next) => {
-  let getUser;
-  User.findOne({ username: req.body.username })
-    .then((user) => {
-      if (!user) {
-        return res.status(401).json({ message: "Authentication failed" });
-      }
-      getUser = user;
-      return bcrypt.compare(req.body.password, user.password);
-    })
-    .then((response) => {
-      if (!response) {
-        return res.status(401).json({ message: "Authentication failed" });
-      }
-      let jwtToken = jwt.sign(
-        {
-          secretusername: getUser.username,
-          userId: getUser._id,
-        },
-        process.env.JWT_KEY,
-        { expiresIn: "1h" }
-      );
-      res.status(200).json({ token: jwtToken, expiresIn: 3600, data: getUser });
-    })
-    .catch((error) => {
-      return res
-        .status(401)
-        .json({ message: "Authentication failed", error: error });
+router.post("/login", async (req, res, next) => {
+  const { username, password } = req.body;
+  try {
+    let user = await User.findOne({ username });
+    if (!user) return res.status(401).json({ message: "Invalid username" });
+
+    const matched = await bcrypt.compare(password, user.password);
+
+    if (!matched) return res.status(401).json({ message: "Invalid password" });
+
+    const payload = {
+      user: {
+        _id: user._id,
+      },
+    };
+
+    jwt.sign(payload, process.env.JWT_KEY, (err, token) => {
+      if (err) throw err;
+      res.status(200).json({ token: token, data: user });
     });
+  } catch (e) {
+    console.error(e);
+    return res.status(401).json({ message: "Authentication failed", error: e });
+  }
 });
 
 // logout
 router.get("/:_id/logout", (req, res, next) => {});
 
 // get / show user
-router.get("/:_id", auth, (req, res, next) => {
-  console.log(req.params);
-  User.findById(req.params._id, (error, data) => {
-    console.log(data);
-    if (error) return next(error);
-    else res.status(200).json({ result: data });
-  });
+router.get("/me", auth, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.body.user);
+    res.json(user);
+  } catch (e) {
+    res.send({ message: "error fetching user" });
+  }
 });
 
 // update user
