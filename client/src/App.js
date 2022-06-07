@@ -6,6 +6,7 @@ import { useState, useEffect, createContext } from "react";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Home from "./components/Home";
+import ChatRoom from "./components/ChatRoom";
 
 export const UserContext = createContext({});
 
@@ -95,6 +96,10 @@ function App() {
           <Route
             path="/home"
             element={<Home user={currentUser} handleLogOut={handleLogOut} />}
+          />
+          <Route
+            path="/chatroom/:name"
+            element={<ChatRoom user={currentUser} />}
           />
         </Routes>
       </UserContext.Provider>
