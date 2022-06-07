@@ -38,7 +38,7 @@ function App() {
 
   // fetches the user from api and sets user in state
   useEffect(() => {
-    fetch(`http://localhost:5000/users/me`, {
+    fetch(`http://localhost:7654/users/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

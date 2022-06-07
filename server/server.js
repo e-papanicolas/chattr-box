@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const port = 5000;
+const port = 7654;
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const MONGODB_URI = process.env.MONGODB_URI;

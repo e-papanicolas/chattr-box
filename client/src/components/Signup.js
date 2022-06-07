@@ -13,7 +13,7 @@ export default function Signup({ handleLogin, errors, setErrors, setToken }) {
 
   const handleSubmitSignup = (e) => {
     e.preventDefault();
-    fetch("http://localhost:5000/users/register", {
+    fetch("http://localhost:7654/users/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
