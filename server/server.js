@@ -8,6 +8,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const mongoose = require("mongoose");
 const errors = require("./errorHandler");
 const usersRouter = require("./routes/user.routes");
+const chatRouter = require("./routes/chat.routes");
 
 // middleware for parsing requests
 app.use(cors());
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // middleware for routes and errors
 app.use("/users", usersRouter);
+app.use("/chat", chatRouter);
 // app.use(errors.errorHandler);
 
 // mongoDB connection
