@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 // import UserContext from "../App";
 
-function Home({ user, handleLogOut }) {
+function Home({ user, handleLogOut, setChat, setErrors }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -24,8 +24,12 @@ function Home({ user, handleLogOut }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        setChat(data);
         navigate(`/chatroom/${data.name}`);
+      })
+      .catch((e) => {
+        console.error(e);
+        setErrors(e);
       });
   };
 
