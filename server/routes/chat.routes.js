@@ -28,15 +28,16 @@ router.put("/new_user", auth, async (req, res, next) => {
 // leave chat
 router.put("/:id/leave", auth, async (req, res, next) => {
   const { id } = req.params;
-  const { user } = req.body;
-  console.log("user", user);
+  const { user_id } = req.body;
   try {
     const chat = await Chat.findOne({ id });
-    const parts = chat.participants.filter((par) => {
+    chat.participants.filter((par) => {
       console.log("par", par);
-      return par !== user;
+      const p = User.findOne({ par });
+      return p._id !== user_id;
     });
-    await Chat.updateOne({}, { participants: parts });
+    await chat.save();
+    // await Chat.updateOne({ chat }, { participants: parts });
     res.status(200).json(chat);
   } catch (e) {
     console.error(e);
