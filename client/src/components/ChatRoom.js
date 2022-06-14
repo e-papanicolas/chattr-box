@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
 
 export default function ChatRoom({ user, chat, setChat, setErrors }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const socket = io(`ws://localhost:7655`);
 
   const [formData, setFormData] = useState({
     user: user._id,
     content: "",
   });
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log(socket.id);
+    });
+  }, [socket]);
 
   // fetch to get chat
   useEffect(() => {
@@ -35,25 +43,25 @@ export default function ChatRoom({ user, chat, setChat, setErrors }) {
   };
 
   const sendMessage = (e) => {
-    e.preventDefault();
-    console.log(chat._id);
-    fetch(`http://localhost:7654/chat/${chat._id}/new_msg`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setChat(data);
-      })
-      .catch((err) => {
-        console.error(err);
-        setErrors(err);
-      });
+    //   e.preventDefault();
+    // console.log(chat._id);
+    // fetch(`http://localhost:7654/chat/${chat._id}/new_msg`, {
+    //   method: "POST",
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(formData),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     console.log(data);
+    //     setChat(data);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //     setErrors(err);
+    //   });
   };
 
   const leaveChat = () => {
@@ -64,7 +72,7 @@ export default function ChatRoom({ user, chat, setChat, setErrors }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        user: user._id,
+        user_id: user._id,
       }),
     })
       .then((res) => res.json())
