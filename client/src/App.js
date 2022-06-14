@@ -16,8 +16,10 @@ function App() {
 
   // set state
   const [currentUser, setCurrentUser] = useState({});
+  // TODO: display errors
   const [errors, setErrors] = useState([]);
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [chat, setChat] = useState({});
 
   function setToken(token) {
     localStorage.setItem("token", token);
@@ -48,12 +50,11 @@ function App() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("use effect return", data);
         setLoggedIn(true);
         setCurrentUser(data);
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
         setErrors(e);
       });
   }, [token]);
@@ -95,11 +96,25 @@ function App() {
         <Routes>
           <Route
             path="/home"
-            element={<Home user={currentUser} handleLogOut={handleLogOut} />}
+            element={
+              <Home
+                user={currentUser}
+                handleLogOut={handleLogOut}
+                setChat={setChat}
+                setErrors={setErrors}
+              />
+            }
           />
           <Route
             path="/chatroom/:name"
-            element={<ChatRoom user={currentUser} />}
+            element={
+              <ChatRoom
+                user={currentUser}
+                chat={chat}
+                setChat={setChat}
+                setErrors={setErrors}
+              />
+            }
           />
         </Routes>
       </UserContext.Provider>
